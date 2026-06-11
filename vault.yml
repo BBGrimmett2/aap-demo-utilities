@@ -13,4 +13,8 @@
 vault_aap_hostname: "aap-controller.example.com"         # e.g. aap.example.com
 vault_aap_token: "REDACTED_AAP_TOKEN"            # AAP personal access token or service account token
 
+# --- SCM Credentials ---
+vault_github_username: "REDACTED_GITHUB_USERNAME" # GitHub username for
+vault_github_token: "REDACTED_GITHUB_TOKEN"     # GitHub personal access token with repo access for SCM credential in AAP
+
 # --- Other Project Secrets ---
