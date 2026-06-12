@@ -5,6 +5,6 @@ controller_projects:
     organization: Utilities
     scm_type: git
     scm_url: "https://github.com/BBGrimmett2/aap-demo-utilities.git" # change to Red Hat COP once moved
-    scm_branch: main 
-    scm_update_on_launch: false
-    scm_clean: false
+    scm_branch: main
+    scm_credential: Utilities SCM
+    default_environment: Utilities Execution Environment

@@ -1,0 +1,6 @@
+---
+# controller_execution_environments:
+#   - name: Utilities Execution Environment
+#     description: Execution environment with AAP configuration collections for utilities
+#     organization: Utilities
+#     image: quay.io/ansible/aap-supported-ee:latest

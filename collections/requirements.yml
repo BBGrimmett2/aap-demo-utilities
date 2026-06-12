@@ -3,4 +3,10 @@
 # Usage:
 #  - name: <collection name>
 #    version: 1.0.0
-collections: []
+collections:
+  - name: infra.aap_configuration_extended
+  - name: ansible.controller
+  - name: ansible.hub
+  - name: ansible.platform
+  - name: ansible.eda
+  - name: infra.aap_configuration

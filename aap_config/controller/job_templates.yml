@@ -1,0 +1,182 @@
+---
+controller_job_templates:
+  # Export AAP Configuration Utilities
+  - name: "Export AAP Config - All Resources"
+    description: "Export all AAP configuration as code to local filesystem or git repository"
+    organization: "Utilities"
+    project: "AAP Demo Projects - Utilities"
+    playbook: "playbooks/export_config_all.yml"
+    inventory: "localhost"
+    execution_environment: "Utilities Execution Environment"
+    survey_enabled: true
+    survey_spec:
+      name: "Export Configuration - All Resources"
+      description: "Configure export settings for all AAP resources"
+      spec:
+        - question_name: "Output Destination"
+          question_description: "Where should the exported configuration be saved?"
+          variable: "aap_export_destination"
+          type: "multiplechoice"
+          required: true
+          default: "local"
+          choices:
+            - "local"
+            - "git"
+        - question_name: "Output Path (for local destination)"
+          question_description: "Local filesystem path for exported configuration"
+          variable: "aap_export_output_path"
+          type: "text"
+          required: false
+          default: "/tmp/aap_config_export"
+        - question_name: "Git Repository URL (for git destination)"
+          question_description: "Git repository URL to push exported configuration"
+          variable: "aap_export_git_repo"
+          type: "text"
+          required: false
+          default: ""
+        - question_name: "Git Branch"
+          question_description: "Git branch to commit to"
+          variable: "aap_export_git_branch"
+          type: "text"
+          required: false
+          default: "main"
+        - question_name: "Flatten Output Structure"
+          question_description: "Flatten all resources into single directory vs organized structure"
+          variable: "aap_export_flatten"
+          type: "multiplechoice"
+          required: true
+          default: "false"
+          choices:
+            - "false"
+            - "true"
+        - question_name: "Export Secrets as Variables"
+          question_description: "Export secrets as Ansible variables (recommended for security)"
+          variable: "aap_export_secrets_as_variables"
+          type: "multiplechoice"
+          required: true
+          default: "true"
+          choices:
+            - "true"
+            - "false"
+
+  - name: "Export AAP Config - Organization"
+    description: "Export organization-specific AAP configuration as code"
+    organization: "Utilities"
+    project: "AAP Demo Projects - Utilities"
+    playbook: "playbooks/export_config_org.yml"
+    inventory: "localhost"
+    execution_environment: "Utilities Execution Environment"
+    survey_enabled: true
+    survey_spec:
+      name: "Export Configuration - Organization"
+      description: "Configure export settings for organization resources"
+      spec:
+        - question_name: "Organization Name"
+          question_description: "Name of the organization to export"
+          variable: "aap_export_organization"
+          type: "text"
+          required: true
+          default: ""
+        - question_name: "Output Destination"
+          question_description: "Where should the exported configuration be saved?"
+          variable: "aap_export_destination"
+          type: "multiplechoice"
+          required: true
+          default: "local"
+          choices:
+            - "local"
+            - "git"
+        - question_name: "Output Path (for local destination)"
+          question_description: "Local filesystem path for exported configuration"
+          variable: "aap_export_output_path"
+          type: "text"
+          required: false
+          default: "/tmp/aap_config_export"
+        - question_name: "Git Repository URL (for git destination)"
+          question_description: "Git repository URL to push exported configuration"
+          variable: "aap_export_git_repo"
+          type: "text"
+          required: false
+          default: ""
+        - question_name: "Git Branch"
+          question_description: "Git branch to commit to"
+          variable: "aap_export_git_branch"
+          type: "text"
+          required: false
+          default: "main"
+        - question_name: "Flatten Output Structure"
+          question_description: "Flatten all resources into single directory vs organized structure"
+          variable: "aap_export_flatten"
+          type: "multiplechoice"
+          required: true
+          default: "false"
+          choices:
+            - "false"
+            - "true"
+
+  - name: "Export AAP Config - Resource Type"
+    description: "Export specific resource type AAP configuration as code"
+    organization: "Utilities"
+    project: "AAP Demo Projects - Utilities"
+    playbook: "playbooks/export_config_resource.yml"
+    inventory: "localhost"
+    execution_environment: "Utilities Execution Environment"
+    survey_enabled: true
+    survey_spec:
+      name: "Export Configuration - Resource Type"
+      description: "Configure export settings for specific resource types"
+      spec:
+        - question_name: "Resource Type"
+          question_description: "Type of resource to export"
+          variable: "aap_export_resource_type"
+          type: "multiplechoice"
+          required: true
+          default: "job_templates"
+          choices:
+            - "credentials"
+            - "job_templates"
+            - "projects"
+            - "inventories"
+            - "workflows"
+            - "schedules"
+            - "execution_environments"
+            - "inventory_sources"
+            - "teams"
+            - "users"
+            - "organizations"
+        - question_name: "Output Destination"
+          question_description: "Where should the exported configuration be saved?"
+          variable: "aap_export_destination"
+          type: "multiplechoice"
+          required: true
+          default: "local"
+          choices:
+            - "local"
+            - "git"
+        - question_name: "Output Path (for local destination)"
+          question_description: "Local filesystem path for exported configuration"
+          variable: "aap_export_output_path"
+          type: "text"
+          required: false
+          default: "/tmp/aap_config_export"
+        - question_name: "Git Repository URL (for git destination)"
+          question_description: "Git repository URL to push exported configuration"
+          variable: "aap_export_git_repo"
+          type: "text"
+          required: false
+          default: ""
+        - question_name: "Git Branch"
+          question_description: "Git branch to commit to"
+          variable: "aap_export_git_branch"
+          type: "text"
+          required: false
+          default: "main"
+        - question_name: "Flatten Output Structure"
+          question_description: "Flatten all resources into single directory vs organized structure"
+          variable: "aap_export_flatten"
+          type: "multiplechoice"
+          required: true
+          default: "false"
+          choices:
+            - "false"
+            - "true"

@@ -1,0 +1,25 @@
+---
+galaxy_info:
+  author: AAP Demo Team
+  description: Export Ansible Automation Platform configuration as code
+  company: Red Hat
+  license: GPL-3.0-or-later
+  min_ansible_version: "2.15"
+  platforms:
+    - name: EL
+      versions:
+        - all
+  galaxy_tags:
+    - aap
+    - automation
+    - configuration
+    - export
+
+dependencies:
+  - role: infra.aap_configuration_extended.filetree_create
+    when: aap_export_scope is defined
+
+collections:
+  - infra.aap_configuration_extended
+  - ansible.controller
+  - ansible.platform

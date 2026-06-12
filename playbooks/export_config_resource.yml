@@ -1,0 +1,13 @@
+---
+- name: Export Specific Resource Type AAP Configuration
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  tasks:
+    - name: Export specific resource type AAP configuration
+      ansible.builtin.import_role:
+        name: aap_export
+        tasks_from: export_resource
+      vars:
+        aap_export_scope: "resource"

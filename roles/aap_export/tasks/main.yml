@@ -1,0 +1,27 @@
+---
+# Default entry point - validates inputs and exports based on scope
+- name: Validate export parameters
+  ansible.builtin.import_tasks: validate.yml
+  tags:
+    - always
+
+- name: Export all AAP configuration
+  ansible.builtin.import_tasks: export_all.yml
+  when: aap_export_scope == 'all'
+  tags:
+    - export
+    - export_all
+
+- name: Export organization-specific configuration
+  ansible.builtin.import_tasks: export_organization.yml
+  when: aap_export_scope == 'organization'
+  tags:
+    - export
+    - export_organization
+
+- name: Export specific resource type
+  ansible.builtin.import_tasks: export_resource.yml
+  when: aap_export_scope == 'resource'
+  tags:
+    - export
+    - export_resource

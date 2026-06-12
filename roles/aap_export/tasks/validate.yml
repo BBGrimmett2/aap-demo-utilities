@@ -1,0 +1,87 @@
+---
+# Validation tasks for aap_export role
+# All input parameters must be validated before export operations
+
+- name: Validate export scope
+  ansible.builtin.assert:
+    that:
+      - aap_export_scope is defined
+      - aap_export_scope in ['all', 'organization', 'resource']
+    fail_msg: "aap_export_scope must be one of: 'all', 'organization', 'resource'. Got: {{ aap_export_scope | default('undefined') }}"
+    success_msg: "Export scope '{{ aap_export_scope }}' is valid"
+
+- name: Validate organization name when scope is organization
+  ansible.builtin.assert:
+    that:
+      - aap_export_organization is defined
+      - aap_export_organization | length > 0
+    fail_msg: "aap_export_organization is required when aap_export_scope is 'organization'"
+    success_msg: "Organization '{{ aap_export_organization }}' will be exported"
+  when: aap_export_scope == 'organization'
+
+- name: Validate resource type when scope is resource
+  ansible.builtin.assert:
+    that:
+      - aap_export_resource_type is defined
+      - aap_export_resource_type | length > 0
+      - aap_export_resource_type in ['credentials', 'job_templates', 'projects', 'inventories',
+                                      'workflows', 'schedules', 'execution_environments',
+                                      'inventory_sources', 'teams', 'users', 'organizations']
+    fail_msg: |
+      aap_export_resource_type must be one of: credentials, job_templates, projects, inventories,
+      workflows, schedules, execution_environments, inventory_sources, teams, users, organizations.
+      Got: {{ aap_export_resource_type | default('undefined') }}
+    success_msg: "Resource type '{{ aap_export_resource_type }}' will be exported"
+  when: aap_export_scope == 'resource'
+
+- name: Validate export destination
+  ansible.builtin.assert:
+    that:
+      - aap_export_destination is defined
+      - aap_export_destination in ['local', 'git']
+    fail_msg: "aap_export_destination must be 'local' or 'git'. Got: {{ aap_export_destination | default('undefined') }}"
+    success_msg: "Export destination is '{{ aap_export_destination }}'"
+
+- name: Validate output path for local destination
+  ansible.builtin.assert:
+    that:
+      - aap_export_output_path is defined
+      - aap_export_output_path | length > 0
+    fail_msg: "aap_export_output_path is required when destination is 'local'"
+    success_msg: "Export output path: {{ aap_export_output_path }}"
+  when: aap_export_destination == 'local'
+
+- name: Validate git repository URL when destination is git
+  ansible.builtin.assert:
+    that:
+      - aap_export_git_repo is defined
+      - aap_export_git_repo | length > 0
+      - aap_export_git_repo is match('^(https?://|git@)')
+    fail_msg: "aap_export_git_repo must be a valid git URL when destination is 'git'"
+    success_msg: "Git repository: {{ aap_export_git_repo }}"
+  when: aap_export_destination == 'git'
+
+- name: Validate AAP connection details
+  ansible.builtin.assert:
+    that:
+      - aap_hostname is defined
+      - aap_hostname | length > 0
+      - aap_token is defined
+      - aap_token | length > 0
+    fail_msg: |
+      AAP connection details are required. Ensure vault_aap_hostname and vault_aap_token are defined.
+      Current values - aap_hostname: {{ aap_hostname | default('undefined') }},
+      aap_token: {{ 'defined' if aap_token is defined and aap_token | length > 0 else 'undefined' }}
+    success_msg: "AAP connection details validated successfully"
+
+- name: Display export configuration
+  ansible.builtin.debug:
+    msg:
+      - "=== Export Configuration ==="
+      - "Scope: {{ aap_export_scope }}"
+      - "Organization: {{ aap_export_organization | default('N/A') }}"
+      - "Resource Type: {{ aap_export_resource_type | default('N/A') }}"
+      - "Destination: {{ aap_export_destination }}"
+      - "Output Path: {{ aap_export_output_path if aap_export_destination == 'local' else aap_export_git_repo }}"
+      - "Flatten Output: {{ aap_export_flatten }}"
+      - "Secrets as Variables: {{ aap_export_secrets_as_variables }}"

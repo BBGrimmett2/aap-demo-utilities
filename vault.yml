@@ -14,7 +14,19 @@ vault_aap_hostname: "aap-controller.example.com"         # e.g. aap.example.com
 vault_aap_token: "REDACTED_AAP_TOKEN"            # AAP personal access token or service account token
 
 # --- SCM Credentials ---
-vault_github_username: "REDACTED_GITHUB_USERNAME" # GitHub username for
-vault_github_token: "REDACTED_GITHUB_TOKEN"     # GitHub personal access token with repo access for SCM credential in AAP
+vault_github_username: "REDACTED_GITHUB_USERNAME" # GitHub username for SCM access
+vault_github_token: "REDACTED_GITHUB_TOKEN"     # GitHub personal access token with repo access
+
+# --- Red Hat Console / Automation Hub Credentials ---
+vault_automation_hub_token: "REDACTED_AUTOMATION_HUB_TOKEN"  # Offline token from console.redhat.com
+# vault_automation_hub_auth_url: "https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token"
+
+# Optional: Separate token for community content if using different source (e.g., galaxy.ansible.com)
+vault_automation_hub_community_token: "REDACTED_COMMUNITY_TOKEN"  # Uncomment and set if using different token for community
+
+# Red Hat Console Content URLs
+vault_automation_hub_published_url: "https://console.redhat.com/api/automation-hub/content/published/"
+vault_automation_hub_validated_url: "https://console.redhat.com/api/automation-hub/content/validated/"
+vault_automation_hub_community_url: "https://galaxy.ansible.com/api/"
 
 # --- Other Project Secrets ---

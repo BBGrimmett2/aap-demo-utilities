@@ -1,0 +1,47 @@
+---
+# Export scope: 'all', 'organization', or 'resource'
+aap_export_scope: "all"
+
+# Organization name (required when scope is 'organization')
+aap_export_organization: ""
+
+# Resource type to export (required when scope is 'resource')
+# Valid values: credentials, job_templates, projects, inventories, workflows, schedules, etc.
+aap_export_resource_type: ""
+
+# Output destination: 'local' or 'git'
+aap_export_destination: "local"
+
+# Local output path (used when destination is 'local')
+aap_export_output_path: "{{ playbook_dir }}/../aap_config"
+
+# Git repository URL (required when destination is 'git')
+aap_export_git_repo: ""
+
+# Git branch to commit to
+aap_export_git_branch: "main"
+
+# Whether to flatten output structure (true = all objects in single directory, false = organized by org/type)
+aap_export_flatten: false
+
+# Export secrets as variables (recommended for security)
+aap_export_secrets_as_variables: true
+
+# Prefix for secret variable names
+aap_export_secrets_prefix: "vaulted"
+
+# Whether to export related objects (dependencies)
+aap_export_related_objects: true
+
+# Skip inventory details
+aap_export_skip_inventory_sources: false
+aap_export_skip_inventory_hosts: false
+aap_export_skip_inventory_groups: false
+
+# API query limits
+aap_export_api_max_objects: 10000
+
+# AAP connection details (should come from vault)
+aap_hostname: "{{ vault_aap_hostname | default('') }}"
+aap_token: "{{ vault_aap_token | default('') }}"
+aap_validate_certs: true

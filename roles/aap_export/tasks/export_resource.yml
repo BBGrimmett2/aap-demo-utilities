@@ -1,0 +1,108 @@
+---
+# Export specific resource type AAP configuration using filetree_create
+
+- name: Set output path for export
+  ansible.builtin.set_fact:
+    _aap_export_output_path: "{{ aap_export_output_path }}"
+
+- name: Ensure output directory exists
+  ansible.builtin.file:
+    path: "{{ _aap_export_output_path }}"
+    state: directory
+    mode: '0755'
+
+- name: Map resource type to filetree_create input_tag
+  ansible.builtin.set_fact:
+    _resource_tag_map:
+      credentials: "credential"
+      job_templates: "job_template"
+      projects: "project"
+      inventories: "inventory"
+      workflows: "workflow"
+      schedules: "schedule"
+      execution_environments: "execution_environment"
+      inventory_sources: "inventory_source"
+      teams: "team"
+      users: "user"
+      organizations: "organization"
+
+- name: Set input tag for resource type
+  ansible.builtin.set_fact:
+    _input_tag: "{{ _resource_tag_map[aap_export_resource_type] }}"
+
+- name: Export specific resource type using filetree_create
+  ansible.builtin.include_role:
+    name: infra.aap_configuration_extended.filetree_create
+  vars:
+    output_path: "{{ _aap_export_output_path }}"
+    input_tag: "{{ _input_tag }}"
+    flatten_output: "{{ aap_export_flatten }}"
+    secrets_as_variables: "{{ aap_export_secrets_as_variables }}"
+    secrets_as_variables_prefix: "{{ aap_export_secrets_prefix }}"
+    export_related_objects: "{{ aap_export_related_objects }}"
+    skip_inventory_sources: "{{ aap_export_skip_inventory_sources }}"
+    skip_inventory_hosts: "{{ aap_export_skip_inventory_hosts }}"
+    skip_inventory_groups: "{{ aap_export_skip_inventory_groups }}"
+    query_controller_api_max_objects: "{{ aap_export_api_max_objects }}"
+    controller_hostname: "{{ aap_hostname }}"
+    controller_oauthtoken: "{{ aap_token }}"
+    controller_validate_certs: "{{ aap_validate_certs }}"
+
+- name: Display export summary
+  ansible.builtin.debug:
+    msg:
+      - "=== Export Complete ==="
+      - "Resource type '{{ aap_export_resource_type }}' has been exported to: {{ _aap_export_output_path }}"
+      - "Review the generated files for {{ aap_export_resource_type }}"
+
+- name: Commit to git repository
+  when: aap_export_destination == 'git'
+  block:
+    - name: Initialize git repository if needed
+      ansible.builtin.command:
+        cmd: git init
+        chdir: "{{ _aap_export_output_path }}"
+        creates: "{{ _aap_export_output_path }}/.git"
+
+    - name: Configure git remote
+      ansible.builtin.command:
+        cmd: "git remote add origin {{ aap_export_git_repo }}"
+        chdir: "{{ _aap_export_output_path }}"
+      ignore_errors: true
+      changed_when: false
+
+    - name: Add all exported files
+      ansible.builtin.command:
+        cmd: git add .
+        chdir: "{{ _aap_export_output_path }}"
+      changed_when: true
+
+    - name: Commit exported configuration
+      ansible.builtin.command:
+        cmd: >
+          git commit -m "Export AAP configuration - {{ aap_export_resource_type }}
+
+          Exported on {{ ansible_date_time.iso8601 }}
+          Scope: resource
+          Resource Type: {{ aap_export_resource_type }}
+          Flatten: {{ aap_export_flatten }}"
+        chdir: "{{ _aap_export_output_path }}"
+      changed_when: true
+      register: _git_commit
+      failed_when:
+        - _git_commit.rc != 0
+        - "'nothing to commit' not in _git_commit.stdout"
+
+    - name: Push to remote repository
+      ansible.builtin.command:
+        cmd: "git push -u origin {{ aap_export_git_branch }}"
+        chdir: "{{ _aap_export_output_path }}"
+      changed_when: true
+      when: _git_commit.changed
+
+    - name: Git export summary
+      ansible.builtin.debug:
+        msg:
+          - "Configuration exported and pushed to git repository"
+          - "Repository: {{ aap_export_git_repo }}"
+          - "Branch: {{ aap_export_git_branch }}"

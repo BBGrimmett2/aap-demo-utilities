@@ -1,0 +1,11 @@
+---
+- name: Export All AAP Configuration
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  tasks:
+    - name: Export all AAP configuration
+      ansible.builtin.import_role:
+        name: aap_export
+        tasks_from: export_all

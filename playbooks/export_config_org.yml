@@ -1,0 +1,13 @@
+---
+- name: Export Organization AAP Configuration
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  tasks:
+    - name: Export organization-specific AAP configuration
+      ansible.builtin.import_role:
+        name: aap_export
+        tasks_from: export_organization
+      vars:
+        aap_export_scope: "organization"
